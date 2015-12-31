@@ -12,8 +12,14 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('master');
 });
+
+Route::get('videos', 'VideosController@index');
+Route::get('videos/create', 'VideosController@create');
+Route::get('videos/{id}', 'VideosController@show');
+Route::post('videos', 'VideosController@store');
+
 
 /*
 |--------------------------------------------------------------------------
