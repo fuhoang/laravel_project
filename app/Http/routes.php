@@ -25,5 +25,11 @@
 */
 
 Route::group(['middleware' => ['web']], function () {
-	Route::resource('videos', 'VideosController');
+});
+
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+    Route::get('/home', 'HomeController@index');
+    Route::resource('videos', 'VideosController');
+
 });

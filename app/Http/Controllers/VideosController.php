@@ -10,9 +10,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Http\Requests\VideoRequest;
+use Auth;
 
 class VideosController extends Controller
 {
+
+	public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Show all videos.
      *
@@ -58,10 +65,8 @@ class VideosController extends Controller
     public function store(VideoRequest $request)
     {
     	// Validation
-
-    	Video::create($request->all());
-    	
-
+    	$video = new Video($request->all());
+    	Auth::user()->videos()->save($video);
     	return redirect('videos');
     } 
 
