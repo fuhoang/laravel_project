@@ -17,7 +17,7 @@ class VideosController extends Controller
 
 	public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['only' => 'create']);
     }
 
     /**
@@ -35,13 +35,11 @@ class VideosController extends Controller
     /**
      * Show a single video
      *
-     * @param intergar $id
+     * @param Video $video
      * @return Response
      **/
-    public function show($id)
+    public function show(Video $video)
     {
-    	$video = Video::findOrFail($id);
-    	//dd($video->published_at);
     	return view('videos.show', compact('video'));
     }
 
@@ -74,23 +72,21 @@ class VideosController extends Controller
     /**
      * Find the video by the given id.
      *
-     * @param intergar $id
+     * @param Video $video
      * @return Response
      */
-    public function edit($id)
+    public function edit(Video $video)
     {
-    	$video = Video::findOrFail($id);
     	return view('videos.edit', compact('video'));
     }
 
     /**
      * update the edited video.
      *
-     * @param integar $id
+     * @param integer $id
      * @return Response
      */
-    public function update($id, VideoRequest $request){
-    	$video = Video::findOrFail($id);
+    public function update(Video $video, VideoRequest $request){
     	$video->update($request->all());
     	return redirect('videos');
     }
