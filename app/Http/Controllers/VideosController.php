@@ -17,7 +17,7 @@ class VideosController extends Controller
 
 	public function __construct()
     {
-        $this->middleware('auth', ['only' => 'create']);
+        $this->middleware('auth');
     }
 
     /**
@@ -66,7 +66,7 @@ class VideosController extends Controller
     	$video = new Video($request->all());
     	Auth::user()->videos()->save($video);
     	return redirect('videos');
-    } 
+    }
 
 
     /**
