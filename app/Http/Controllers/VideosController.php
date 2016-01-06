@@ -62,9 +62,8 @@ class VideosController extends Controller
      */
     public function store(VideoRequest $request)
     {
-    	// Validation
-    	$video = new Video($request->all());
-    	Auth::user()->videos()->save($video);
+    	Auth::user()->videos()->create($request->all());
+        flash()->overlay('Your video has been created', 'Success');
     	return redirect('videos');
     }
 
