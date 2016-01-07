@@ -22,7 +22,7 @@ class Video extends Model
      */
     public function setPublishedAtAttribute($date)
     {
-    	$this->attributes['published_at'] = Carbon::parse($date); 
+    	$this->attributes['published_at'] = Carbon::parse($date);
     }
 
 
@@ -50,11 +50,21 @@ class Video extends Model
     /**
      *  An video is owned by a user
      *
-     * @return BelongsTo()
+     * @return \Illuminate\Database\Eloquent\Relations\BelongTo
      */
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    /**
+     * Get the tags associated with given video
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongToMany
+     */
+    public function tags()
+    {
+        return $this->belongsToMany('App\Tag')->withTimestamps();
     }
 
 }
