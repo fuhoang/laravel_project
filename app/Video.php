@@ -67,4 +67,14 @@ class Video extends Model
         return $this->belongsToMany('App\Tag')->withTimestamps();
     }
 
+    /**
+     * Get a list of tag ids associated with the current video.
+     *
+     * @return array
+     */
+    public function getTagListAttribute()
+    {
+        return $this->tags->lists('id')->toArray();
+    }
+
 }

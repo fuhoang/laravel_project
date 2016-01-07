@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 //use Illuminate\Http\Request;
 
 use App\Video;
+use App\Tag;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -15,6 +16,9 @@ use Auth;
 class VideosController extends Controller
 {
 
+    /**
+     * Create a new videos controller instance.
+     */
 	public function __construct()
     {
         $this->middleware('auth');
@@ -45,24 +49,27 @@ class VideosController extends Controller
 
 
     /**
-     * Show form
+     * Show the page to create a new video
      *
+     * @return Response
      */
     public function create()
     {
-    	return view('videos.create');
+        $tags = Tag::lists('name', 'id');
+    	return view('videos.create', compact('tags'));
     }
 
 
     /**
      * Save a new video
      *
-     * @param CreateVideoRequest $request
+     * @param VideoRequest $request
      * @return Response
      */
     public function store(VideoRequest $request)
     {
-    	Auth::user()->videos()->create($request->all());
+
+        $this->createVideo($request);
         flash()->overlay('Your video has been created', 'Success');
     	return redirect('videos');
     }
@@ -76,17 +83,48 @@ class VideosController extends Controller
      */
     public function edit(Video $video)
     {
-    	return view('videos.edit', compact('video'));
+        $tags = Tag::lists('name', 'id');
+    	return view('videos.edit', compact('video', 'tags'));
     }
+
 
     /**
      * update the edited video.
      *
-     * @param integer $id
+     * @param VideoRequest $request
+     * @param Video        $video
      * @return Response
      */
     public function update(Video $video, VideoRequest $request){
     	$video->update($request->all());
+        $this->syncTags($video, $request->input('tag_list'));
     	return redirect('videos');
+    }
+
+
+    /**
+     * Sync up the list of tags in the database.
+     *
+     * @param VideoRequest $request
+     * @param Video        $video
+     */
+    private function syncTags(Video $video, array $tags)
+    {
+        $video->tags()->sync($tags);
+    }
+
+
+    /**
+     * save a new video.
+     *
+     * @param VideoRequest $request
+     * @return mixed
+     */
+    private function createVideo(VideoRequest $request)
+    {
+        $video = Auth::user()->videos()->create($request->all());
+        $this->syncTags($video, $request->input('tag_list'));
+
+        return $video;
     }
 }
