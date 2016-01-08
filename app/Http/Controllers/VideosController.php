@@ -56,6 +56,7 @@ class VideosController extends Controller
     public function create()
     {
         $tags = Tag::lists('name', 'id');
+        //dd($tags);
     	return view('videos.create', compact('tags'));
     }
 
@@ -97,6 +98,8 @@ class VideosController extends Controller
      */
     public function update(Video $video, VideoRequest $request){
     	$video->update($request->all());
+        print_r($request->input('tag_list'));
+        dd($request->input('tag_list'));
         $this->syncTags($video, $request->input('tag_list'));
     	return redirect('videos');
     }
@@ -113,6 +116,26 @@ class VideosController extends Controller
         $video->tags()->sync($tags);
     }
 
+    /**
+     * check if tags exist, if not create them
+     *
+     *
+     */
+    private function intergrityCheckTags($tags)
+    {
+        //dd($tags);
+        $currentTags = array_filter($tags, 'is_numeric');
+        $newTags = array_filter($tags, 'is_string');
+
+        foreach ($newTags as $newTag)
+        {
+            if ($tag = Tag::create(['name' => $newTag]))
+                $currentTags[] = $tag->id;
+        }
+
+        return $currentTags;
+    }
+
 
     /**
      * save a new video.
@@ -123,7 +146,10 @@ class VideosController extends Controller
     private function createVideo(VideoRequest $request)
     {
         $video = Auth::user()->videos()->create($request->all());
-        $this->syncTags($video, $request->input('tag_list'));
+
+        $tagSync = $this->intergrityCheckTags($request->input('tag_list'));
+
+        $this->syncTags($video, $tagSync);
 
         return $video;
     }
