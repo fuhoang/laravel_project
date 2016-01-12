@@ -10,7 +10,7 @@
 
 <div class="form-group">
 	{!! Form::label('published_at', 'Title:') !!}
-	{!! Form::input('date', 'published_at', date('Y-m-d'), ['class' => 'form-control']) !!}
+	{!! Form::input('date', 'published_at', $video->published_at, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">

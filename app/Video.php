@@ -25,6 +25,15 @@ class Video extends Model
     	$this->attributes['published_at'] = Carbon::parse($date);
     }
 
+    /**
+     * Set the published_at attribute
+     *
+     * @param $date
+     */
+    public function getPublishedAtAttribute($date)
+    {
+        return Carbon::parse($date)->format('Y-m-d');
+    }
 
     /**
      * Get all published videos
